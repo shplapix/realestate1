@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.navbar.bg-primary {
+    background-color: #0d6efd!important; 
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+}
+
+/* 
+ * СТИЛЬ ДЛЯ ИЗОБРАЖЕНИЯ НА СТРАНИЦЕ С ДЕТАЛЯМИ
+*/
+.listing-detail-img {
+    max-height: 600px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+ * КЛАСС ДЛЯ ФОТО РИЕЛТОРА.
+*/
+.realtor-img-round {
+    width: 150px;       /* Фиксированная ширина */
+    height: 150px;      /* Фиксированная высота (делает квадрат) */
+    object-fit: cover;  /* Масштабирует и обрезает, не растягивая */
+    border-radius: 50%; /* Делает его круглым */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* 
+ * --- НОВЫЕ СТИЛИ ДЛЯ СЛАЙДЕРА ИЗОБРАЖЕНИЙ ---
+*/
+
+.image-carousel-container {
+    position: relative; /* Необходимо для позиционирования стрелок */
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden; /* Скрывает углы изображения, если оно не скруглено */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#carousel-image {
+    width: 100%;
+    display: block;
+    max-height: 600px; /* Ограничиваем высоту, как и раньше */
+    object-fit: cover;
+    transition: filter 0.2s ease-in-out;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    padding: 12px 18px;
+    cursor: pointer;
+    user-select: none; /* Запрещает выделение текста стрелки */
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 4px;
+    
+    /* Скрыты по умолчанию */
+    display: none;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.carousel-arrow:hover {
+    opacity: 1; /* Делаем ярче при наведении на саму стрелку */
+}
+
+#prev-arrow {
+    left: 15px;
+}
+
+#next-arrow {
+    right: 15px;
+}
+
+/* Эффект при наведении на контейнер (по вашему запросу) */
+.image-carousel-container:hover #carousel-image {
+    filter: brightness(90%); /* "Выделение" изображения */
+}
+
+.image-carousel-container:hover.carousel-arrow {
+    display: block; /* Показываем стрелки */
+}

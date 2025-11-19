@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ listing.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h2 class="mb-3">{{ listing.title }}</h2>
+        <p class="text-muted">{{ listing.address }}, {{ listing.city }}, {{ listing.state }}</p>
+        
+        {% if listing.photo_main %}
+        <img src="{{ listing.photo_main.url }}" class="img-fluid mb-3 listing-detail-img" alt="{{ listing.title }}">
+        {% endif %}
+        
+        <div class="row mt-4">
+            {% if listing.photo_1 %}
+            <div class="col-md-6">
+                <img src="{{ listing.photo_1.url }}" class="img-fluid mb-3" alt="">
+            </div>
+            {% endif %}
+            {% if listing.photo_2 %}
+            <div class="col-md-6">
+                <img src="{{ listing.photo_2.url }}" class="img-fluid mb-3" alt="">
+            </div>
+            {% endif %}
+        </div>
+        
+        <p class="mt-4">{{ listing.description|linebreaks }}</p>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                {% if listing.realtor.photo %}
+                <img src="{{ listing.realtor.photo.url }}" class="realtor-img-round mb-3" alt="{{ listing.realtor.name }}">
+                {% endif %}
+                <h5 class="card-title">{{ listing.realtor.name }}</h5>
+                <p class="card-text">Риелтор</p>
+                <p class="card-text">{{ listing.realtor.phone }}</p>
+                <p class="card-text">{{ listing.realtor.email }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Детали Объекта
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Цена:</strong> ${{ listing.price|floatformat:0 }}</li>
+                <li class="list-group-item"><strong>Спальни:</strong> {{ listing.bedrooms }}</li>
+                <li class="list-group-item"><strong>Ванные:</strong> {{ listing.bathrooms }}</li>
+                <li class="list-group-item"><strong>Гараж:</strong> {{ listing.garage }}</li>
+                <li class="list-group-item"><strong>Площадь:</strong> {{ listing.sqft }} sqft</li>
+                <li class="list-group-item"><strong>Участок:</strong> {{ listing.lot_size }} acre</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

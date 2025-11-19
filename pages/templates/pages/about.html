@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}О нас{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">О Нашей Компании</h1>
+<p>Мы ведущее агентство недвижимости...</p>
+
+<h2 class="mt-5 mb-4">Наши Риелторы</h2>
+<div class="row">
+    {% if realtors %}
+        {% for realtor in realtors %}
+        <div class="col-md-4 text-center mb-4">
+            {% if realtor.photo %}
+            <img src="{{ realtor.photo.url }}" alt="{{ realtor.name }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
+            <h4>{{ realtor.name }}</h4>
+            <p class="text-muted">{{ realtor.phone }}</p>
+            {% if realtor.is_mvp %}
+            <span class="badge bg-success">MVP</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

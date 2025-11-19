@@ -37,6 +37,26 @@
                 <p class="card-text">Риелтор</p>
                 <p class="card-text">{{ listing.realtor.phone }}</p>
                 <p class="card-text">{{ listing.realtor.email }}</p>
+                <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                {% if listing.realtor.photo %}
+                <img src="{{ listing.realtor.photo.url }}" class="realtor-img-round mb-3" alt="{{ listing.realtor.name }}">
+                {% endif %}
+                <h5 class="card-title">{{ listing.realtor.name }}</h5>
+                <p class="card-text">Риелтор</p>
+                <p class="card-text">{{ listing.realtor.phone }}</p>
+                <p class="card-text">{{ listing.realtor.email }}</p>
+                
+                {% if user.is_authenticated %}
+                <a href="{% url 'chat:start_chat' listing.realtor.id listing.id %}" class="btn btn-warning mt-3">
+                    <i class="fas fa-comment"></i> Начать Чат с Риелтором
+                </a>
+                {% else %}
+                <p class="mt-3 text-danger">Войдите, чтобы начать чат.</p>
+                {% endif %}
+                </div>
+        </div>
             </div>
         </div>
 

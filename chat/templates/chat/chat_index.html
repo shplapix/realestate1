@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Мои Сообщения{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Мои Чаты</h1>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        {% if chats %}
+            <div class="list-group">
+                {% for chat in chats %}
+                
+                {% with last_message=chat.messages.last %}
+                <a href="{% url 'chat:room' chat.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        {% if chat.realtor.photo %}
+                        <img src="{{ chat.realtor.photo.url }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="{{ chat.realtor.name }}">
+                        {% else %}
+                        <div class="rounded-circle me-3 bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            {{ chat.realtor.name|first }}
+                        </div>
+                        {% endif %}
+                        
+                        <div>
+                            <h5 class="mb-1">
+                                Чат с {{ chat.realtor.name }}
+                            </h5>
+                            <small class="text-muted">
+                                По объекту: {{ chat.listing.title|default:"(Общий)" }}
+                            </small>
+                            <p class="mb-1 text-truncate" style="max-width: 400px;">
+                                {% if last_message %}
+                                    **{{ last_message.is_realtor_sender|yesno:"Риелтор,Вы" }}:** {{ last_message.content|truncatechars:40 }}
+                                {% else %}
+                                    Начните диалог.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <small>{{ last_message.timestamp|date:"d M, H:i" }}</small>
+                </a>
+                {% endwith %}
+                
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                У вас пока нет начатых чатов. Начните общение со страницы понравившегося объекта!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Чат с {{ realtor_name }}{% endblock %}
+
+{% block content %}
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        height: 70vh; /* Высота окна чата */
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-header {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        background-color: #f8f9fa;
+    }
+    .chat-messages {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background-color: #e9ecef;
+    }
+    .chat-form {
+        padding: 15px;
+        border-top: 1px solid #ddd;
+    }
+    .message {
+        padding: 8px 12px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        max-width: 80%;
+    }
+    .message.sender-user {
+        background-color: #007bff; /* Синий для покупателя */
+        color: white;
+        margin-left: auto;
+        margin-right: 0;
+    }
+    .message.sender-realtor {
+        background-color: #fff; /* Белый для риелтора */
+        border: 1px solid #ccc;
+        color: #333;
+        margin-right: auto;
+        margin-left: 0;
+    }
+    .message-time {
+        display: block;
+        font-size: 0.75rem;
+        margin-top: 2px;
+        opacity: 0.7;
+        text-align: right;
+    }
+</style>
+
+<div class="chat-container shadow-lg">
+    <div class="chat-header">
+        <h3 class="mb-0">{{ realtor_name }}</h3>
+        <p class="text-muted mb-0">Обсуждение: {{ listing_title }}</p>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages-box">
+        {% for message in messages %}
+            {% if message.is_realtor_sender %}
+            <div class="message sender-realtor">
+                <strong>{{ realtor_name }}:</strong> 
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% else %}
+            <div class="message sender-user">
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <div class="chat-form">
+        <form method="POST" action="{% url 'chat:send_message' chat.id %}" class="input-group">
+            {% csrf_token %}
+            <input type="text" name="content" class="form-control" placeholder="Напишите сообщение..." required>
+            <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Автоматический скролл вниз при загрузке страницы
+    const messagesBox = document.getElementById('chat-messages-box');
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+</script>
+{% endblock %}

@@ -28,7 +28,8 @@ urlpatterns = [
     
     # 3. Пути для приложения pages ( / и /about/ )
     # Этот путь должен быть последним, так как '' "поймает" все
-    path('', include('pages.urls')), 
+    path('chat/', include('chat.urls')),
+    path('', include('pages.urls')),   
 ]
 
 # Этот блок, который у вас уже есть, нужен для 

@@ -29,6 +29,7 @@ urlpatterns = [
     # 3. Пути для приложения pages ( / и /about/ )
     # Этот путь должен быть последним, так как '' "поймает" все
     path('chat/', include('chat.urls')),
+    path('accounts/', include('accounts.urls')),
     path('', include('pages.urls')),   
 ]
 

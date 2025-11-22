@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="display-4">Личный кабинет</h1>
+        <p class="lead">Добро пожаловать, {{ user.first_name }}!</p>
+
+        {% if user.realtor %}
+        <div class="alert alert-info">
+            Вы вошли как Риелтор. <a href="{% url 'listings:create' %}" class="btn btn-sm btn-primary">Добавить
+                предложение</a>
+        </div>
+
+        <h3 class="mt-4">Мои объявления</h3>
+        {% if listings %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Заголовок</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for listing in listings %}
+                <tr>
+                    <td>{{ listing.title }}</td>
+                    <td>{{ listing.list_date|date:"d.m.Y" }}</td>
+                    <td>
+                        <a href="{% url 'listings:listing' listing.id %}" class="btn btn-sm btn-info">Просмотр</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>У вас пока нет объявлений.</p>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-success">
+            Вы вошли как Покупатель.
+        </div>
+        {% endif %}
+
+        <hr>
+
+        <h3>Мои чаты</h3>
+        {% if chats %}
+        <div class="list-group">
+            {% for chat in chats %}
+            <a href="{% url 'chat:room' chat.id %}" class="list-group-item list-group-item-action">
+                Чат с
+                {% if user.realtor %}
+                {{ chat.user.first_name }} {{ chat.user.last_name }} (Покупатель)
+                {% else %}
+                {{ chat.realtor.name }} (Риелтор)
+                {% endif %}
+                {% if chat.listing %}
+                по объекту: {{ chat.listing.title }}
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>У вас пока нет активных чатов.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

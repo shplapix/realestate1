@@ -47,6 +47,8 @@ class Message(models.Model):
     # True = Отправил Риелтор, False = Отправил Покупатель
     is_realtor_sender = models.BooleanField(default=False) 
     
+    is_read = models.BooleanField(default=False)
+
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

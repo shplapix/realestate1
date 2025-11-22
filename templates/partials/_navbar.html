@@ -15,14 +15,32 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'listings:listings' %}">Объявления</a>
         </li>
-        
+
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'chat:index' %}">
-            <i class="fas fa-comment"></i> Сообщения </a>
+            Сообщения
+            {% if unread_messages_count > 0 %}
+            <span class="badge bg-danger rounded-pill">{{ unread_messages_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'dashboard' %}">Кабинет</a>
+        </li>
+        <li class="nav-item">
+          <form action="{% url 'logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="nav-link btn btn-link"
+              style="border: none; background: none; cursor: pointer;">Выход</button>
+          </form>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Вход</a>
         </li>
         {% endif %}
-        
+
       </ul>
     </div>
   </div>

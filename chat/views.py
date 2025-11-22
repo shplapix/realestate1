@@ -12,8 +12,11 @@ from django.db.models import Max
 def chat_index(request):
     """Отображает список всех чатов пользователя, отсортированный по последнему сообщению."""
     
-    # Получаем все чаты пользователя
-    user_chats = Chat.objects.filter(user=request.user)
+    # Получаем все чаты пользователя (как покупателя или как риелтора)
+    if hasattr(request.user, 'realtor'):
+        user_chats = Chat.objects.filter(realtor=request.user.realtor)
+    else:
+        user_chats = Chat.objects.filter(user=request.user)
     
     # Получаем ID последнего сообщения и его временную метку для сортировки
     chats_with_last_message = user_chats.annotate(
@@ -55,18 +58,29 @@ def chat_room(request, chat_id):
     
     chat = get_object_or_404(Chat, pk=chat_id)
 
-    # Проверка прав: только участник чата (покупатель) может его просматривать.
-    if request.user != chat.user:
-        # NOTE: Если нужно, чтобы риелтор тоже мог видеть чат, 
-        # здесь нужно добавить проверку: or request.user.realtor == chat.realtor
+    # Проверка прав: покупатель или риелтор
+    is_buyer = request.user == chat.user
+    is_realtor = False
+    if hasattr(request.user, 'realtor'):
+        is_realtor = request.user.realtor == chat.realtor
+
+    if not is_buyer and not is_realtor:
         messages.error(request, "У вас нет доступа к этому чату.")
         return redirect('index') 
     
     messages_list = chat.messages.all()
 
+    # Mark messages as read
+    if is_buyer:
+        # If buyer, mark messages from realtor as read
+        chat.messages.filter(is_realtor_sender=True, is_read=False).update(is_read=True)
+    elif is_realtor:
+        # If realtor, mark messages from buyer as read
+        chat.messages.filter(is_realtor_sender=False, is_read=False).update(is_read=True)
+
     context = {
         'chat': chat,
-        'messages': messages_list,
+        'chat_messages': messages_list,
         'realtor_name': chat.realtor.name,
         'listing_title': chat.listing.title if chat.listing else "Общий чат",
     }
@@ -87,20 +101,19 @@ def send_message(request, chat_id):
         # Логика определения отправителя
         is_realtor_sender = False 
         
-        # Проверка, является ли текущий пользователь покупателем в этом чате
-        if request.user == chat.user:
-            is_realtor_sender = False 
-        
-        # Если пользователь не покупатель, это может быть риелтор.
-        # В вашем текущем проекте модели Realtor и User не связаны напрямую, 
-        # поэтому для простоты мы предполагаем, что сообщение отправлено покупателем (False).
-        # Для корректной поддержки отправки сообщений риелтором, нужно связать Realtor с User.
+        if hasattr(request.user, 'realtor') and request.user.realtor == chat.realtor:
+             is_realtor_sender = True
+        elif request.user == chat.user:
+             is_realtor_sender = False
+        else:
+             messages.error(request, "Вы не можете отправлять сообщения в этот чат.")
+             return redirect('chat:room', chat_id=chat.id)
         
         # Создание сообщения
         Message.objects.create(
             chat=chat,
             content=content,
-            is_realtor_sender=is_realtor_sender # False для покупателя
+            is_realtor_sender=is_realtor_sender
         )
     
     # Перенаправляем обратно в комнату чата

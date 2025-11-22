@@ -1,5 +1,5 @@
 from django.urls import path
-from. import views
+from . import views
 
 app_name = 'listings' # Добавляем пространство имен
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     
     # /listings/1/ , /listings/2/ и т.д.
     path('<int:listing_id>/', views.listing, name='listing'),
+    path('create/', views.create_listing, name='create'),
 ]

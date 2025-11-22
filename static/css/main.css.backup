@@ -41,7 +41,7 @@
   --bg-card: #1c2128;
   --text-primary: #ffffff;
   --text-secondary: #e6edf3;
-  --text-muted: #c9d1d9;
+  --text-muted: #9198a1;
   --border-color: #30363d;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.6);
@@ -71,19 +71,6 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--text-primary);
-}
-
-p {
-  color: var(--text-primary);
 }
 
 /* Animated Background Pattern */
@@ -198,39 +185,6 @@ body::before {
 
 .card-header {
   background: var(--bg-gradient);
-  color: white;
-  font-weight: 600;
-  border: none;
-  padding: 1.5rem;
-}
-
-.card-body {
-  padding: 2rem;
-}
-
-.card-title {
-  color: var(--text-primary) !important;
-  font-weight: 700;
-}
-
-.card-subtitle {
-  color: var(--text-secondary) !important;
-}
-
-.card-text {
-  color: var(--text-primary) !important;
-}
-
-.card-img-top {
-  max-height: 250px;
-  object-fit: cover;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
 
   to {
     opacity: 1;
@@ -413,7 +367,7 @@ body::before {
 .list-group-item {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   transition: all 0.3s ease;
 }
 
@@ -424,7 +378,7 @@ body::before {
 
 .list-group-item-action:hover {
   background: var(--bg-gradient);
-  color: white !important;
+  color: white;
 }
 
 /* ============================================
@@ -593,10 +547,6 @@ footer {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
 }
 
 .gradient-border {

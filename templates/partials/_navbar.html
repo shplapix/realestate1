@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'index' %}">RealEstate</a>
+    <a class="navbar-brand" href="{% url 'index' %}">🏠 RealEstate</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}">Главная</a>
         </li>
@@ -19,28 +19,31 @@
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'chat:index' %}">
-            Сообщения
+            💬 Сообщения
             {% if unread_messages_count > 0 %}
             <span class="badge bg-danger rounded-pill">{{ unread_messages_count }}</span>
             {% endif %}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dashboard' %}">Кабинет</a>
+          <a class="nav-link" href="{% url 'dashboard' %}">👤 Кабинет</a>
         </li>
         <li class="nav-item">
           <form action="{% url 'logout' %}" method="post" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="nav-link btn btn-link"
-              style="border: none; background: none; cursor: pointer;">Выход</button>
+              style="border: none; background: none; cursor: pointer; color: white;">Выход</button>
           </form>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Вход</a>
+          <a class="nav-link" href="{% url 'login' %}">🔐 Вход</a>
         </li>
         {% endif %}
 
+        <li class="nav-item ms-3">
+          <button id="theme-toggle" class="theme-toggle" title="Переключить тему">🌙</button>
+        </li>
       </ul>
     </div>
   </div>

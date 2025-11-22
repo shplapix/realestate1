@@ -4,47 +4,50 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8 col-lg-6">
         <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Регистрация</h4>
+            <div class="card-header text-center">
+                <h4 class="mb-0">✨ Регистрация</h4>
             </div>
             <div class="card-body">
                 <form action="{% url 'register' %}" method="POST">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="first_name" class="form-label">Имя</label>
-                        <input type="text" name="first_name" class="form-control" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">👤 Имя</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="Иван" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">👥 Фамилия</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Иванов" required>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="last_name" class="form-label">Фамилия</label>
-                        <input type="text" name="last_name" class="form-control" required>
+                        <label for="email" class="form-label">📧 Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label for="password" class="form-label">🔒 Пароль</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Пароль</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label for="confirm_password" class="form-label">🔐 Подтвердите пароль</label>
+                        <input type="password" name="confirm_password" class="form-control" placeholder="••••••••"
+                            required>
                     </div>
-                    <div class="mb-3">
-                        <label for="confirm_password" class="form-label">Подтвердите пароль</label>
-                        <input type="password" name="confirm_password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Роль</label>
+                    <div class="mb-4">
+                        <label class="form-label">🎭 Роль</label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="role" id="roleBuyer" value="buyer"
                                 checked>
                             <label class="form-check-label" for="roleBuyer">
-                                Покупатель (Ищу жилье)
+                                🏡 Покупатель (Ищу жилье)
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="role" id="roleRealtor" value="realtor">
                             <label class="form-check-label" for="roleRealtor">
-                                Риелтор (Продаю жилье)
+                                💼 Риелтор (Продаю жилье)
                             </label>
                         </div>
                     </div>
@@ -53,7 +56,8 @@
                     </div>
                 </form>
                 <div class="mt-3 text-center">
-                    <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+                    <p class="mb-0">Уже есть аккаунт? <a href="{% url 'login' %}"
+                            class="text-gradient fw-bold">Войти</a></p>
                 </div>
             </div>
         </div>

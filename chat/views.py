@@ -78,9 +78,20 @@ def chat_room(request, chat_id):
         # If realtor, mark messages from buyer as read
         chat.messages.filter(is_realtor_sender=False, is_read=False).update(is_read=True)
 
+    # Get all chats for sidebar
+    if hasattr(request.user, 'realtor'):
+        all_chats = Chat.objects.filter(realtor=request.user.realtor).annotate(
+            last_message_time=Max('messages__timestamp')
+        ).order_by('-last_message_time', '-created_at')
+    else:
+        all_chats = Chat.objects.filter(user=request.user).annotate(
+            last_message_time=Max('messages__timestamp')
+        ).order_by('-last_message_time', '-created_at')
+
     context = {
         'chat': chat,
         'chat_messages': messages_list,
+        'all_chats': all_chats,
         'realtor_name': chat.realtor.name,
         'listing_title': chat.listing.title if chat.listing else "Общий чат",
     }

@@ -3,98 +3,85 @@
 {% block title %}Чат с {{ realtor_name }}{% endblock %}
 
 {% block content %}
-<style>
-    .chat-container {
-        max-width: 800px;
-        margin: auto;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        height: 70vh;
-        /* Высота окна чата */
-        display: flex;
-        flex-direction: column;
-    }
-
-    .chat-header {
-        padding: 15px;
-        border-bottom: 1px solid #ddd;
-        background-color: #f8f9fa;
-    }
-
-    .chat-messages {
-        flex-grow: 1;
-        padding: 15px;
-        overflow-y: auto;
-        background-color: #e9ecef;
-    }
-
-    .chat-form {
-        padding: 15px;
-        border-top: 1px solid #ddd;
-    }
-
-    .message {
-        padding: 8px 12px;
-        border-radius: 15px;
-        margin-bottom: 10px;
-        max-width: 80%;
-    }
-
-    .message.sender-user {
-        background-color: #007bff;
-        /* Синий для покупателя */
-        color: white;
-        margin-left: auto;
-        margin-right: 0;
-    }
-
-    .message.sender-realtor {
-        background-color: #fff;
-        /* Белый для риелтора */
-        border: 1px solid #ccc;
-        color: #333;
-        margin-right: auto;
-        margin-left: 0;
-    }
-
-    .message-time {
-        display: block;
-        font-size: 0.75rem;
-        margin-top: 2px;
-        opacity: 0.7;
-        text-align: right;
-    }
-</style>
-
-<div class="chat-container shadow-lg">
-    <div class="chat-header">
-        <h3 class="mb-0">{{ realtor_name }}</h3>
-        <p class="text-muted mb-0">Обсуждение: {{ listing_title }}</p>
+<div class="chat-layout">
+    <!-- Chat Sidebar -->
+    <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+            💬 Все чаты
+        </div>
+        <div>
+            {% for c in all_chats %}
+            <div class="chat-list-item {% if c.id == chat.id %}active{% endif %}">
+                <a href="{% url 'chat:room' c.id %}" style="text-decoration: none; color: inherit; display: block;">
+                    <strong>
+                        {% if user.realtor %}
+                        {{ c.user.first_name }} {{ c.user.last_name }}
+                        {% else %}
+                        {{ c.realtor.name }}
+                        {% endif %}
+                    </strong>
+                    {% if c.listing %}
+                    <div style="font-size: 0.85rem; opacity: 0.8;">{{ c.listing.title|truncatewords:5 }}</div>
+                    {% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <div class="chat-messages" id="chat-messages-box">
-        {% for message in chat_messages %}
-        {% if message.is_realtor_sender %}
-        <div class="message sender-realtor">
-            <strong>{{ realtor_name }}:</strong>
-            {{ message.content }}
-            <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <h4 class="mb-0">{{ realtor_name }}</h4>
+            <p class="mb-0" style="opacity: 0.9; font-size: 0.9rem;">{{ listing_title }}</p>
         </div>
-        {% else %}
-        <div class="message sender-user">
-            {{ message.content }}
-            <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </div>
 
-    <div class="chat-form">
-        <form method="POST" action="{% url 'chat:send_message' chat.id %}" class="input-group">
-            {% csrf_token %}
-            <input type="text" name="content" class="form-control" placeholder="Напишите сообщение..." required>
-            <button class="btn btn-primary" type="submit">Отправить</button>
-        </form>
+        <div class="chat-messages" id="chat-messages-box">
+            {% for message in chat_messages %}
+            {% if user.realtor %}
+            <!-- Realtor view -->
+            {% if message.is_realtor_sender %}
+            <!-- My message (right, blue) -->
+            <div class="message message-sender">
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% else %}
+            <!-- Buyer message (left, white) -->
+            <div class="message message-receiver">
+                <div class="message-sender-name">{{ chat.user.first_name }} {{ chat.user.last_name }}</div>
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% endif %}
+            {% else %}
+            <!-- Buyer view -->
+            {% if message.is_realtor_sender %}
+            <!-- Realtor message (left, white) -->
+            <div class="message message-receiver">
+                <div class="message-sender-name">{{ realtor_name }}</div>
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% else %}
+            <!-- My message (right, blue) -->
+            <div class="message message-sender">
+                {{ message.content }}
+                <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="chat-form">
+            <form method="POST" action="{% url 'chat:send_message' chat.id %}" class="input-group">
+                {% csrf_token %}
+                <input type="text" name="content" class="form-control" placeholder="Напишите сообщение..." required
+                    style="border-radius: 50px 0 0 50px;">
+                <button class="btn btn-primary" type="submit" style="border-radius: 0 50px 50px 0;">Отправить</button>
+            </form>
+        </div>
     </div>
 </div>
 

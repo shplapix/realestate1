@@ -4,27 +4,27 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-6 col-lg-5">
         <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Вход</h4>
+            <div class="card-header text-center">
+                <h4 class="mb-0">🔐 Вход в систему</h4>
             </div>
             <div class="card-body">
                 <form action="{% url 'login' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label for="email" class="form-label">📧 Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Пароль</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label for="password" class="form-label">🔒 Пароль</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
-                    <div class="d-grid">
+                    <div class="d-grid mb-3">
                         <button type="submit" class="btn btn-primary">Войти</button>
                     </div>
                 </form>
-                <div class="mt-3 text-center d-grid">
+                <div class="text-center d-grid">
                     <a href="{% url 'register' %}" class="btn btn-secondary">Регистрация</a>
                 </div>
             </div>

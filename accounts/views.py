@@ -90,8 +90,12 @@ def dashboard(request):
         # User is a buyer
         chats = Chat.objects.filter(user=user)
         
+    # Get favorite listings for all users
+    favorite_listings = user.favorite_listings.all()
+        
     context = {
         'chats': chats,
-        'listings': listings
+        'listings': listings,
+        'favorite_listings': favorite_listings
     }
     return render(request, 'accounts/dashboard.html', context)

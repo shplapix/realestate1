@@ -23,76 +23,108 @@
                 {% endif %}
             </div>
         </div>
+    </div>
 
-        {% if user.realtor %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">📋 Мои объявления</h4>
-            </div>
-            <div class="card-body">
-                {% if listings %}
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Заголовок</th>
-                                <th>Дата</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for listing in listings %}
-                            <tr>
-                                <td>{{ listing.title }}</td>
-                                <td>{{ listing.list_date|date:"d.m.Y" }}</td>
-                                <td>
-                                    <a href="{% url 'listings:listing' listing.id %}" class="btn btn-info btn-sm">👁️
-                                        Просмотр</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <p class="text-muted mb-0">У вас пока нет объявлений.</p>
-                {% endif %}
-            </div>
+    <!-- Favorites Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">❤️ Избранное</h4>
         </div>
-        {% endif %}
-
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">💬 Мои чаты</h4>
-            </div>
-            <div class="card-body">
-                {% if chats %}
-                <div class="list-group">
-                    {% for chat in chats %}
-                    <a href="{% url 'chat:room' chat.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between align-items-center">
-                            <div>
-                                <strong>
-                                    {% if user.realtor %}
-                                    👤 {{ chat.user.first_name }} {{ chat.user.last_name }} (Покупатель)
-                                    {% else %}
-                                    💼 {{ chat.realtor.name }} (Риелтор)
-                                    {% endif %}
-                                </strong>
-                                {% if chat.listing %}
-                                <p class="mb-0 text-muted">🏠 {{ chat.listing.title }}</p>
-                                {% endif %}
-                            </div>
-                            <span class="badge bg-primary rounded-pill">→</span>
+        <div class="card-body">
+            {% if favorite_listings %}
+            <div class="row">
+                {% for listing in favorite_listings %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        {% if listing.photo_main %}
+                        <img src="{{ listing.photo_main.url }}" class="card-img-top" alt="{{ listing.title }}"
+                            style="height: 150px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body p-2">
+                            <h6 class="card-title">{{ listing.title }}</h6>
+                            <p class="card-text small text-muted mb-1">{{ listing.city }}</p>
+                            <a href="{% url 'listings:listing' listing.id %}"
+                                class="btn btn-primary btn-sm w-100">Подробнее</a>
                         </div>
-                    </a>
-                    {% endfor %}
+                    </div>
                 </div>
-                {% else %}
-                <p class="text-muted mb-0">У вас пока нет активных чатов.</p>
-                {% endif %}
+                {% endfor %}
             </div>
+            {% else %}
+            <p class="text-muted mb-0">У вас пока нет избранных объявлений.</p>
+            {% endif %}
         </div>
     </div>
+
+    {% if user.realtor %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">📋 Мои объявления</h4>
+        </div>
+        <div class="card-body">
+            {% if listings %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Заголовок</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for listing in listings %}
+                        <tr>
+                            <td>{{ listing.title }}</td>
+                            <td>{{ listing.list_date|date:"d.m.Y" }}</td>
+                            <td>
+                                <a href="{% url 'listings:listing' listing.id %}" class="btn btn-info btn-sm">👁️
+                                    Просмотр</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">У вас пока нет объявлений.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">💬 Мои чаты</h4>
+        </div>
+        <div class="card-body">
+            {% if chats %}
+            <div class="list-group">
+                {% for chat in chats %}
+                <a href="{% url 'chat:room' chat.id %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div>
+                            <strong>
+                                {% if user.realtor %}
+                                👤 {{ chat.user.first_name }} {{ chat.user.last_name }} (Покупатель)
+                                {% else %}
+                                💼 {{ chat.realtor.name }} (Риелтор)
+                                {% endif %}
+                            </strong>
+                            {% if chat.listing %}
+                            <p class="mb-0 text-muted">🏠 {{ chat.listing.title }}</p>
+                            {% endif %}
+                        </div>
+                        <span class="badge bg-primary rounded-pill">→</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">У вас пока нет активных чатов.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 </div>
 {% endblock %}

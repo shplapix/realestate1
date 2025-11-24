@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 
+from django.urls import path
+from . import views
+
 app_name = 'listings' # Добавляем пространство имен
 urlpatterns = [
     # /listings/
@@ -9,4 +12,5 @@ urlpatterns = [
     # /listings/1/ , /listings/2/ и т.д.
     path('<int:listing_id>/', views.listing, name='listing'),
     path('create/', views.create_listing, name='create'),
+    path('favorite/<int:listing_id>/', views.toggle_favorite, name='favorite'),
 ]

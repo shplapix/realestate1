@@ -65,7 +65,7 @@ def chat_room(request, chat_id):
         is_realtor = request.user.realtor == chat.realtor
 
     if not is_buyer and not is_realtor:
-        messages.error(request, "У вас нет доступа к этому чату.")
+        messages.error(request, "У вас немає доступу до цього чату.")
         return redirect('index') 
     
     messages_list = chat.messages.all()
@@ -93,7 +93,7 @@ def chat_room(request, chat_id):
         'chat_messages': messages_list,
         'all_chats': all_chats,
         'realtor_name': chat.realtor.name,
-        'listing_title': chat.listing.title if chat.listing else "Общий чат",
+        'listing_title': chat.listing.title if chat.listing else "Загальний чат",
     }
     return render(request, 'chat/chat_room.html', context)
 
@@ -106,7 +106,7 @@ def send_message(request, chat_id):
         content = request.POST.get('content', '').strip()
         
         if not content:
-            messages.error(request, "Сообщение не может быть пустым.")
+            messages.error(request, "Повідомлення не може бути порожнім.")
             return redirect('chat:room', chat_id=chat.id)
 
         # Логика определения отправителя
@@ -117,7 +117,7 @@ def send_message(request, chat_id):
         elif request.user == chat.user:
              is_realtor_sender = False
         else:
-             messages.error(request, "Вы не можете отправлять сообщения в этот чат.")
+             messages.error(request, "Ви не можете відправляти повідомлення в цей чат.")
              return redirect('chat:room', chat_id=chat.id)
         
         # Создание сообщения

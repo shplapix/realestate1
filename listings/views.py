@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Listing
+from .models import Listing, Review
 from django.core.paginator import Paginator
 from .forms import ListingForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from datetime import datetime
+from chat.models import Chat, Message
 
 # Страница со всеми объявлениями
 def listings(request):
@@ -40,7 +42,7 @@ def listing(request, listing_id):
 @login_required
 def create_listing(request):
     if not hasattr(request.user, 'realtor'):
-        messages.error(request, 'Только риелторы могут добавлять объявления')
+        messages.error(request, 'Тільки рієлтори можуть додавати оголошення')
         return redirect('dashboard')
 
     if request.method == 'POST':
@@ -49,7 +51,7 @@ def create_listing(request):
             listing = form.save(commit=False)
             listing.realtor = request.user.realtor
             listing.save()
-            messages.success(request, 'Объявление успешно добавлено!')
+            messages.success(request, 'Оголошення успішно додано!')
             return redirect('dashboard')
     else:
         form = ListingForm()
@@ -64,23 +66,20 @@ def toggle_favorite(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     if listing.favorites.filter(id=request.user.id).exists():
         listing.favorites.remove(request.user)
-        messages.success(request, 'Объявление удалено из избранного')
+        messages.success(request, 'Оголошення видалено з обраного')
     else:
         listing.favorites.add(request.user)
-        messages.success(request, 'Объявление добавлено в избранное')
+        messages.success(request, 'Оголошення додано до обраного')
     return redirect(request.META.get('HTTP_REFERER', 'listings:listings'))
 
-from datetime import datetime
-from chat.models import Chat, Message
-
 @login_required
-def purchase_listing(request, listing_id):
+def purchase(request, listing_id):
     if request.method == 'POST':
         listing = get_object_or_404(Listing, pk=listing_id)
         
         # Check if already sold
         if listing.is_sold:
-            messages.error(request, 'Этот объект уже продан!')
+            messages.error(request, 'Цей об\'єкт вже продано!')
             return redirect('listings:listing', listing_id=listing.id)
 
         # Mark as sold
@@ -100,65 +99,62 @@ def purchase_listing(request, listing_id):
         )
         
         # Create System Message
+        # Note: Message model might need adjustment if it doesn't support system messages well, 
+        # but we'll use is_realtor_sender=False and a specific format.
         Message.objects.create(
             chat=chat,
-            is_realtor_sender=False, # System message
+            is_realtor_sender=False, 
             content=f"SYSTEM: Ваш товар '{listing.title}' был куплен. Средства в размере ${listing.price} поступили на ваш аккаунт.",
             is_read=False
         )
         
-        messages.success(request, 'Оплата прошла успешно!')
+        messages.success(request, 'Операція пройшла успішно')
         return redirect('dashboard')
         
     return redirect('listings:listings')
 
-from datetime import datetime
-from chat.models import Chat, Message
-
 @login_required
-def purchase_listing(request, listing_id):
+def add_review(request, listing_id):
     if request.method == 'POST':
         listing = get_object_or_404(Listing, pk=listing_id)
         
-        # Check if already sold
-        if listing.is_sold:
-            messages.error(request, 'Этот объект уже продан!')
-            return redirect('listings:listing', listing_id=listing.id)
+        # Check if user is the buyer
+        if listing.buyer != request.user:
+            messages.error(request, 'Ви не можете залишити відгук на цей об\'єкт')
+            return redirect('dashboard')
+            
+        rating = request.POST.get('rating')
+        text = request.POST.get('text')
+        
+        Review.objects.create(
+            listing=listing,
+            seller=listing.realtor,
+            buyer=request.user,
+            rating=rating,
+            text=text
+        )
+        
+        messages.success(request, 'Відгук додано')
+        return redirect('dashboard')
+    return redirect('dashboard')
 
-        # Mark as sold
-        listing.is_sold = True
-        listing.buyer = request.user
-        listing.sold_date = datetime.now()
-        listing.is_published = False # Hide from main listings
-        listing.save()
-        
-        # Create/Get Chat and Send Notification to Realtor
-        realtor_user = listing.realtor.user # Assuming Realtor model has OneToOneField to User called 'user'
-        # Wait, Realtor model in realtors/models.py usually has 'user' field? 
-        # Let's check realtors/models.py if needed, but assuming standard structure.
-        # Actually, let's check if Realtor has a user field.
-        # Based on previous context, Realtor has a user field.
-        
-        # We need to find or create a chat between Buyer (request.user) and Realtor (listing.realtor)
-        # The Chat model uses 'realtor' field which is a Realtor instance.
-        
-        chat, created = Chat.objects.get_or_create(
-            user=request.user,
-            realtor=listing.realtor,
-            listing=listing
-        )
-        
-        # Create System Message
-        Message.objects.create(
-            chat=chat,
-            is_realtor_sender=False, # System message, but we can attribute to buyer or handle differently. 
-            # Requirement: "from RealEstate" message to seller.
-            # Let's say it's a message in the chat.
-            content=f"SYSTEM: Ваш товар '{listing.title}' был куплен. Средства в размере ${listing.price} поступили на ваш аккаунт.",
-            is_read=False
-        )
-        
-        messages.success(request, 'Оплата прошла успешно!')
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    
+    if review.buyer != request.user:
+        messages.error(request, 'Ви не можете редагувати цей відгук')
         return redirect('dashboard')
         
-    return redirect('listings:listings')
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        text = request.POST.get('text')
+        
+        review.rating = rating
+        review.text = text
+        review.save()
+        
+        messages.success(request, 'Відгук оновлено')
+        return redirect('dashboard')
+        
+    return redirect('dashboard')

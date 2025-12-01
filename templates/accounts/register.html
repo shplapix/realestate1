@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}Реєстрація{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="card">
             <div class="card-header text-center">
-                <h4 class="mb-0">✨ Регистрация</h4>
+                <h4 class="mb-0">✨ Реєстрація</h4>
             </div>
             <div class="card-body">
                 <form action="{% url 'register' %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="first_name" class="form-label">👤 Имя</label>
-                            <input type="text" name="first_name" class="form-control" placeholder="Иван" required>
+                            <label for="first_name" class="form-label">👤 Ім'я</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="Іван" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="last_name" class="form-label">👥 Фамилия</label>
-                            <input type="text" name="last_name" class="form-control" placeholder="Иванов" required>
+                            <label for="last_name" class="form-label">👥 Прізвище</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Іванов" required>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -31,7 +31,7 @@
                         <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
                     <div class="mb-3">
-                        <label for="confirm_password" class="form-label">🔐 Подтвердите пароль</label>
+                        <label for="confirm_password" class="form-label">🔐 Підтвердіть пароль</label>
                         <input type="password" name="confirm_password" class="form-control" placeholder="••••••••"
                             required>
                     </div>
@@ -41,23 +41,23 @@
                             <input class="form-check-input" type="radio" name="role" id="roleBuyer" value="buyer"
                                 checked>
                             <label class="form-check-label" for="roleBuyer">
-                                🏡 Покупатель (Ищу жилье)
+                                🏡 Покупець (Шукаю житло)
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="role" id="roleRealtor" value="realtor">
                             <label class="form-check-label" for="roleRealtor">
-                                💼 Риелтор (Продаю жилье)
+                                💼 Рієлтор (Продаю житло)
                             </label>
                         </div>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                        <button type="submit" class="btn btn-primary">Зареєструватися</button>
                     </div>
                 </form>
                 <div class="mt-3 text-center">
-                    <p class="mb-0">Уже есть аккаунт? <a href="{% url 'login' %}"
-                            class="text-gradient fw-bold">Войти</a></p>
+                    <p class="mb-0">Вже є акаунт? <a href="{% url 'login' %}" class="text-gradient fw-bold">Увійти</a>
+                    </p>
                 </div>
             </div>
         </div>

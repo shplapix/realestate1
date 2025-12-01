@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Главная{% endblock %}
+{% block title %}Головна{% endblock %}
 
 {% block content %}
 <div class="container text-center mt-5">
-    <h1>Добро пожаловать на RealEstate</h1>
-    <p class="lead">Найдите дом своей мечты</p>
+    <h1>Ласкаво просимо на RealEstate</h1>
+    <p class="lead">Знайдіть дім своєї мрії</p>
 </div>
 
-<h2 class="text-center my-4">Последние объявления</h2>
+<h2 class="text-center my-4">Останні оголошення</h2>
 
 <div class="row">
     {% if listings %}
-        {% for listing in listings %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if listing.photo_main %}
-                    <img src="{{ listing.photo_main.url }}" class="card-img-top" alt="{{ listing.title }}" style="height: 220px; object-fit: cover;">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ listing.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${{ listing.price|floatformat:0 }}</h6>
-                    <p class="card-text">{{ listing.city }}, {{ listing.state }}</p>
-                    <a href="{% url 'listings:listing' listing.id %}" class="btn btn-primary">Подробнее</a>
-                </div>
+    {% for listing in listings %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if listing.photo_main %}
+            <img src="{{ listing.photo_main.url }}" class="card-img-top" alt="{{ listing.title }}"
+                style="height: 220px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ listing.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${{ listing.price|floatformat:0 }}</h6>
+                <p class="card-text">{{ listing.city }}, {{ listing.state }}</p>
+                <a href="{% url 'listings:listing' listing.id %}" class="btn btn-primary">Детальніше</a>
             </div>
         </div>
-        {% endfor %}
+    </div>
+    {% endfor %}
     {% else %}
-        <p>Объявления не найдены.</p>
+    <p>Оголошення не знайдені.</p>
     {% endif %}
 </div>
 {% endblock %}

@@ -25,8 +25,24 @@ class Listing(models.Model):
     is_published = models.BooleanField(default=True)
     list_date = models.DateTimeField(default=datetime.now, blank=True)
     
+    # Purchase fields
+    buyer = models.ForeignKey(User, related_name='purchased_listings', on_delete=models.DO_NOTHING, null=True, blank=True)
+    is_sold = models.BooleanField(default=False)
+    sold_date = models.DateTimeField(null=True, blank=True)
+
     # Favorites
     favorites = models.ManyToManyField(User, related_name='favorite_listings', blank=True)
 
     def __str__(self):
         return self.title
+
+class Review(models.Model):
+    listing = models.OneToOneField(Listing, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Realtor, on_delete=models.CASCADE, related_name='reviews')
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_given')
+    rating = models.IntegerField(default=5)
+    text = models.TextField()
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return f"Review for {self.listing.title} by {self.buyer.username}"

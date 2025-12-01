@@ -7,42 +7,42 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'index' %}">Главная</a>
+          <a class="nav-link" href="{% url 'index' %}">Головна</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">О нас</a>
+          <a class="nav-link" href="{% url 'about' %}">Про нас</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'listings:listings' %}">Объявления</a>
+          <a class="nav-link" href="{% url 'listings:listings' %}">Оголошення</a>
         </li>
 
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'chat:index' %}">
-            💬 Сообщения
+            💬 Повідомлення
             {% if unread_messages_count > 0 %}
             <span class="badge bg-danger rounded-pill">{{ unread_messages_count }}</span>
             {% endif %}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dashboard' %}">👤 Кабинет</a>
+          <a class="nav-link" href="{% url 'dashboard' %}">👤 Кабінет</a>
         </li>
         <li class="nav-item">
           <form action="{% url 'logout' %}" method="post" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="nav-link btn btn-link"
-              style="border: none; background: none; cursor: pointer; color: white;">Выход</button>
+              style="border: none; background: none; cursor: pointer; color: white;">Вихід</button>
           </form>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">🔐 Вход</a>
+          <a class="nav-link" href="{% url 'login' %}">🔐 Вхід</a>
         </li>
         {% endif %}
 
         <li class="nav-item ms-3">
-          <button id="theme-toggle" class="theme-toggle" title="Переключить тему">🌙</button>
+          <button id="theme-toggle" class="theme-toggle" title="Змінити тему">🌙</button>
         </li>
       </ul>
     </div>

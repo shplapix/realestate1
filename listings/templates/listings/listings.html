@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Наши Объекты{% endblock %}
+{% block title %}Наші Об'єкти{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Наши Объекты</h1>
+<h1 class="mb-4">Наші Об'єкти</h1>
 
 <div class="row">
     {% if listings %}
@@ -17,12 +17,12 @@
                 <h6 class="card-subtitle mb-2 text-muted">{{ listing.city }}, {{ listing.state }}</h6>
                 <p class="card-text">{{ listing.description|truncatewords:20 }}</p>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Цена: ${{ listing.price|floatformat:0 }}</li>
-                    <li class="list-group-item">Спальни: {{ listing.bedrooms }}</li>
-                    <li class="list-group-item">Ванные: {{ listing.bathrooms }}</li>
+                    <li class="list-group-item">Ціна: ${{ listing.price|floatformat:0 }}</li>
+                    <li class="list-group-item">Спальні: {{ listing.bedrooms }}</li>
+                    <li class="list-group-item">Ванні: {{ listing.bathrooms }}</li>
                 </ul>
                 <div class="d-flex justify-content-between align-items-center mt-auto">
-                    <a href="{% url 'listings:listing' listing.id %}" class="btn btn-primary">Подробнее</a>
+                    <a href="{% url 'listings:listing' listing.id %}" class="btn btn-primary">Детальніше</a>
                     {% if user.is_authenticated %}
                     <a href="{% url 'listings:favorite' listing.id %}" class="text-danger"
                         style="font-size: 1.5rem; text-decoration: none;">
@@ -39,7 +39,7 @@
     </div>
     {% endfor %}
     {% else %}
-    <p>Объекты не найдены.</p>
+    <p>Оголошення не знайдені.</p>
     {% endif %}
 </div>
 

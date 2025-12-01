@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}Вхід{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
         <div class="card">
             <div class="card-header text-center">
-                <h4 class="mb-0">🔐 Вход в систему</h4>
+                <h4 class="mb-0">🔐 Вхід в систему</h4>
             </div>
             <div class="card-body">
                 <form action="{% url 'login' %}" method="POST">
@@ -21,11 +21,11 @@
                         <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary">Войти</button>
+                        <button type="submit" class="btn btn-primary">Увійти</button>
                     </div>
                 </form>
                 <div class="text-center d-grid">
-                    <a href="{% url 'register' %}" class="btn btn-secondary">Регистрация</a>
+                    <a href="{% url 'register' %}" class="btn btn-secondary">Реєстрація</a>
                 </div>
             </div>
         </div>

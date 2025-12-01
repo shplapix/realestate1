@@ -1,24 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Личный кабинет{% endblock %}
+{% block title %}Особистий кабінет{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="mb-0">👋 Добро пожаловать, {{ user.first_name }}!</h3>
+                <h3 class="mb-0">👋 Ласкаво просимо, {{ user.first_name }}!</h3>
             </div>
             <div class="card-body">
                 {% if user.realtor %}
                 <div class="alert alert-info mb-0">
-                    <strong>💼 Вы вошли как Риелтор</strong>
-                    <a href="{% url 'listings:create' %}" class="btn btn-primary btn-sm float-end">➕ Добавить
-                        предложение</a>
+                    <strong>💼 Ви увійшли як Рієлтор</strong>
+                    <a href="{% url 'listings:create' %}" class="btn btn-primary btn-sm float-end">➕
+                        Додати
+                        пропозицію</a>
                 </div>
                 {% else %}
                 <div class="alert alert-success mb-0">
-                    <strong>🏡 Вы вошли как Покупатель</strong>
+                    <strong>🏡 Ви увійшли як Покупець</strong>
                 </div>
                 {% endif %}
             </div>
@@ -28,7 +29,7 @@
     <!-- Favorites Section -->
     <div class="card mb-4">
         <div class="card-header">
-            <h4 class="mb-0">❤️ Избранное</h4>
+            <h4 class="mb-0">❤️ Обране</h4>
         </div>
         <div class="card-body">
             {% if favorite_listings %}
@@ -44,14 +45,14 @@
                             <h6 class="card-title">{{ listing.title }}</h6>
                             <p class="card-text small text-muted mb-1">{{ listing.city }}</p>
                             <a href="{% url 'listings:listing' listing.id %}"
-                                class="btn btn-primary btn-sm w-100">Подробнее</a>
+                                class="btn btn-primary btn-sm w-100">Детальніше</a>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-muted mb-0">У вас пока нет избранных объявлений.</p>
+            <p class="text-muted mb-0">У вас поки немає обраних оголошень.</p>
             {% endif %}
         </div>
     </div>
@@ -59,7 +60,7 @@
     {% if user.realtor %}
     <div class="card mb-4">
         <div class="card-header">
-            <h4 class="mb-0">📋 Мои объявления</h4>
+            <h4 class="mb-0">📋 Мої активні оголошення</h4>
         </div>
         <div class="card-body">
             {% if listings %}
@@ -69,7 +70,7 @@
                         <tr>
                             <th>Заголовок</th>
                             <th>Дата</th>
-                            <th>Действия</th>
+                            <th>Дії</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +80,7 @@
                             <td>{{ listing.list_date|date:"d.m.Y" }}</td>
                             <td>
                                 <a href="{% url 'listings:listing' listing.id %}" class="btn btn-info btn-sm">👁️
-                                    Просмотр</a>
+                                    Перегляд</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -87,7 +88,119 @@
                 </table>
             </div>
             {% else %}
-            <p class="text-muted mb-0">У вас пока нет объявлений.</p>
+            <p class="text-muted mb-0">У вас поки немає активних оголошень.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sold Listings -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">💰 Продані оголошення</h4>
+        </div>
+        <div class="card-body">
+            {% if sold_listings %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Заголовок</th>
+                            <th>Покупець</th>
+                            <th>Дата продажу</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for listing in sold_listings %}
+                        <tr>
+                            <td>{{ listing.title }}</td>
+                            <td>{{ listing.buyer.first_name }} {{ listing.buyer.last_name }}</td>
+                            <td>{{ listing.sold_date|date:"d.m.Y" }}</td>
+                            <td>
+                                <a href="{% url 'listings:listing' listing.id %}" class="btn btn-info btn-sm">👁️
+                                    Перегляд</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">У вас поки немає проданих оголошень.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">⭐ Відгуки</h4>
+        </div>
+        <div class="card-body">
+            {% if reviews %}
+            <div class="list-group">
+                {% for review in reviews %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ review.buyer.first_name }} {{ review.buyer.last_name }}</h5>
+                        <small>{{ review.created_at|date:"d.m.Y" }}</small>
+                    </div>
+                    <p class="mb-1">
+                        {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= review.rating %}⭐{% endif %} {% endfor %} </p>
+                            <p class="mb-1">{{ review.text }}</p>
+                            <small class="text-muted">Об'єкт: {{ review.listing.title }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">У вас поки немає відгуків.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Purchased Listings (For Buyers) -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">🛍️ Куплені об'єкти</h4>
+        </div>
+        <div class="card-body">
+            {% if purchased_listings %}
+            <div class="row">
+                {% for listing in purchased_listings %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        {% if listing.photo_main %}
+                        <img src="{{ listing.photo_main.url }}" class="card-img-top" alt="{{ listing.title }}"
+                            style="height: 150px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body p-2">
+                            <h6 class="card-title">{{ listing.title }}</h6>
+                            <p class="card-text small text-muted mb-1">{{ listing.city }}</p>
+                            <p class="card-text small text-success">Куплено: {{ listing.sold_date|date:"d.m.Y" }}</p>
+
+                            {% if listing.user_review %}
+                            <button class="btn btn-secondary btn-sm w-100 mb-2"
+                                onclick="openReviewModal('edit', '{{ listing.user_review.id }}', '{{ listing.user_review.rating }}', '{{ listing.user_review.text|escapejs }}')">
+                                ✏️ Редагувати відгук
+                            </button>
+                            {% else %}
+                            <button class="btn btn-warning btn-sm w-100 mb-2"
+                                onclick="openReviewModal('add', '{{ listing.id }}')">
+                                ⭐ Залишити відгук
+                            </button>
+                            {% endif %}
+
+                            <a href="{% url 'listings:listing' listing.id %}"
+                                class="btn btn-primary btn-sm w-100">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">Ви ще нічого не купили.</p>
             {% endif %}
         </div>
     </div>
@@ -95,7 +208,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h4 class="mb-0">💬 Мои чаты</h4>
+            <h4 class="mb-0">💬 Мої чати</h4>
         </div>
         <div class="card-body">
             {% if chats %}
@@ -106,9 +219,9 @@
                         <div>
                             <strong>
                                 {% if user.realtor %}
-                                👤 {{ chat.user.first_name }} {{ chat.user.last_name }} (Покупатель)
+                                👤 {{ chat.user.first_name }} {{ chat.user.last_name }} (Покупець)
                                 {% else %}
-                                💼 {{ chat.realtor.name }} (Риелтор)
+                                💼 {{ chat.realtor.name }} (Рієлтор)
                                 {% endif %}
                             </strong>
                             {% if chat.listing %}
@@ -121,10 +234,66 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-muted mb-0">У вас пока нет активных чатов.</p>
+            <p class="text-muted mb-0">У вас поки немає активних чатів.</p>
             {% endif %}
         </div>
     </div>
 </div>
 </div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Відгук</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Оцінка (1-5)</label>
+                        <select class="form-select" id="rating" name="rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Текст відгуку</label>
+                        <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openReviewModal(mode, id, rating, text) {
+        const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+        const form = document.getElementById('reviewForm');
+        const ratingInput = document.getElementById('rating');
+        const textInput = document.getElementById('text');
+        const label = document.getElementById('reviewModalLabel');
+
+        if (mode === 'add') {
+            label.innerText = "Залишити відгук";
+            form.action = "/listings/add_review/" + id + "/";
+            ratingInput.value = "5";
+            textInput.value = "";
+        } else {
+            label.innerText = "Редагувати відгук";
+            form.action = "/listings/edit_review/" + id + "/";
+            ratingInput.value = rating;
+            textInput.value = text;
+        }
+
+        modal.show();
+    }
+</script>
 {% endblock %}

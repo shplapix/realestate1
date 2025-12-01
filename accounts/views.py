@@ -15,7 +15,7 @@ def register(request):
 
         # Validation
         if password != confirm_password:
-            messages.error(request, 'Пароли не совпадают')
+            messages.error(request, 'Паролі не співпадають')
             return redirect('register')
         
         if User.objects.filter(email=email).exists():
@@ -23,11 +23,11 @@ def register(request):
             # We can use HTML in messages if safe, or just text. 
             # Django messages usually escape HTML. We might need to handle this in template or use mark_safe.
             # For now, I will put the text.
-            messages.error(request, 'Почта уже используется, перейти к <a href="/accounts/login">входу</a>?')
+            messages.error(request, 'Пошта вже використовується, перейти до <a href="/accounts/login">входу</a>?')
             return redirect('register')
         
         if User.objects.filter(username=email).exists():
-             messages.error(request, 'Пользователь с таким email уже существует')
+             messages.error(request, 'Користувач з таким email вже існує')
              return redirect('register')
 
         # Create User
@@ -49,7 +49,7 @@ def register(request):
                 photo="photos/default.jpg" # Placeholder
             )
 
-        messages.success(request, 'Вы успешно зарегистрировались. Теперь вы можете войти.')
+        messages.success(request, 'Ви успішно зареєструвалися. Тепер ви можете увійти.')
         return redirect('login')
 
     else:
@@ -66,7 +66,7 @@ def login(request):
             auth.login(request, user)
             return redirect('dashboard')
         else:
-            messages.error(request, 'Неверные учетные данные')
+            messages.error(request, 'Невірні облікові дані')
             return redirect('login')
     else:
         return render(request, 'accounts/login.html')
@@ -81,14 +81,28 @@ def dashboard(request):
     user = request.user
     chats = []
     listings = []
+    purchased_listings = []
+    sold_listings = []
+    reviews = []
+
     if hasattr(user, 'realtor'):
         # User is a realtor
         chats = Chat.objects.filter(realtor=user.realtor)
-        from listings.models import Listing
-        listings = Listing.objects.filter(realtor=user.realtor).order_by('-list_date')
+        from listings.models import Listing, Review
+        listings = Listing.objects.filter(realtor=user.realtor, is_published=True).order_by('-list_date')
+        sold_listings = Listing.objects.filter(realtor=user.realtor, is_sold=True).order_by('-sold_date')
+        reviews = Review.objects.filter(seller=user.realtor).order_by('-created_at')
     else:
         # User is a buyer
         chats = Chat.objects.filter(user=user)
+        from listings.models import Listing
+        purchased_listings = Listing.objects.filter(buyer=user).order_by('-sold_date')
+        # Check for reviews
+        for listing in purchased_listings:
+            try:
+                listing.user_review = listing.review
+            except:
+                listing.user_review = None
         
     # Get favorite listings for all users
     favorite_listings = user.favorite_listings.all()
@@ -96,6 +110,9 @@ def dashboard(request):
     context = {
         'chats': chats,
         'listings': listings,
+        'purchased_listings': purchased_listings,
+        'sold_listings': sold_listings,
+        'reviews': reviews,
         'favorite_listings': favorite_listings
     }
     return render(request, 'accounts/dashboard.html', context)
